@@ -21,9 +21,9 @@ resuelve DNS desde este equipo).
 ## Próximos pasos
 
 - [ ] Corregir/verificar el Service URI de Aiven (host actual sin DNS).
-- [ ] Ejecutar migración del esquema contra Aiven.
+- [ ] Ejecutar migración del esquema contra Aiven (`scripts/check_db.py`).
 - [ ] Verificar endpoints reales con `curl`/navegador.
-- [ ] Commit y push a GitHub.
+- [x] Commit y push a GitHub (`770a2f2`).
 
 ## Problemas conocidos
 
@@ -33,5 +33,6 @@ resuelve DNS desde este equipo).
 
 ## Última verificación
 
-- Tests unitarios y de API: pendientes de ejecutar.
-- Conexión Aiven: fallida por DNS.
+- Tests unitarios y de API: **18 passed** en 1.35 s.
+- Frontend, CSS, JS, `/docs` y `/openapi.json`: HTTP 200.
+- Conexión Aiven: fallida por DNS (`getaddrinfo failed` / NXDOMAIN).
