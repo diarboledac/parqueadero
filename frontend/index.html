@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parqueadero SGP-8 · Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-info">
+      <span class="badge">DEMO EN VIVO</span>
+      <h1>Parqueadero <span>SGP-8</span></h1>
+      <p>Ingreso, salida y liquidación en tiempo real sobre PostgreSQL en Aiven.</p>
+    </div>
+    <div class="hero-side">
+      <div id="conexion" class="conexion pendiente">
+        <span class="dot"></span>
+        <span id="conexion-texto">Conectando…</span>
+      </div>
+      <div class="reloj" id="reloj">--:--</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats" aria-label="Resumen del parqueadero">
+      <article class="stat">
+        <span class="stat-label">Celdas libres</span>
+        <strong id="stat-libres" class="stat-valor verde">--</strong>
+      </article>
+      <article class="stat">
+        <span class="stat-label">Celdas ocupadas</span>
+        <strong id="stat-ocupados" class="stat-valor rojo">--</strong>
+      </article>
+      <article class="stat">
+        <span class="stat-label">Capacidad total</span>
+        <strong id="stat-total" class="stat-valor">--</strong>
+      </article>
+      <article class="stat">
+        <span class="stat-label">Cobrado hoy</span>
+        <strong id="stat-cobrado" class="stat-valor azul">--</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Mapa del parqueadero</h2>
+        <button id="btn-refrescar" class="btn ghost" type="button">Actualizar</button>
+      </div>
+      <div id="mapa" class="mapa" aria-live="polite">
+        <p class="vacio">Cargando celdas…</p>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <section class="panel">
+        <h2>Registrar ingreso</h2>
+        <form id="form-ingreso" class="form" autocomplete="off">
+          <label>
+            Placa del vehículo
+            <input id="placa-ingreso" name="placa" placeholder="ABC123" maxlength="8"
+                   pattern="[A-Za-z0-9]{5,8}" required>
+          </label>
+          <label>
+            Tipo de vehículo
+            <select id="tipo-ingreso" name="tipo">
+              <option value="carro">Carro</option>
+              <option value="moto">Moto</option>
+            </select>
+          </label>
+          <button class="btn primary" type="submit">Ingresar vehículo</button>
+        </form>
+        <p class="hint">
+          Tarifas: carro <strong id="precio-carro">--</strong>/hora ·
+          moto <strong id="precio-moto">--</strong>/hora
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Registrar salida</h2>
+        <form id="form-salida" class="form" autocomplete="off">
+          <label>
+            Placa del vehículo
+            <input id="placa-salida" name="placa" placeholder="ABC123" maxlength="8"
+                   pattern="[A-Za-z0-9]{5,8}" required>
+          </label>
+          <button class="btn danger" type="submit">Cobrar y liberar celda</button>
+        </form>
+        <p class="hint">El sistema calcula las horas, cobra y genera la factura automáticamente.</p>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Liquidación del día</h2>
+        <button id="btn-liquidar" class="btn ghost" type="button">Actualizar</button>
+      </div>
+      <div class="liq-stats" id="liq-stats"></div>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Placa</th>
+              <th>Tipo</th>
+              <th>Celda</th>
+              <th>Ingreso</th>
+              <th>Salida</th>
+              <th>Horas</th>
+              <th>Total</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="liq-body">
+            <tr><td colspan="8" class="vacio">Sin movimientos hoy.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Parqueadero SGP-8 · FastAPI + PostgreSQL (Aiven)</span>
+    <a href="/docs" target="_blank" rel="noopener">Documentación de la API</a>
+  </footer>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <div id="modal-factura" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="factura-titulo">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="factura-titulo">Factura de salida</h2>
+        <button id="btn-cerrar-modal" class="btn-icon" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div id="factura-contenido"></div>
+      <button id="btn-cerrar-modal-2" class="btn primary" type="button">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
